@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type, Schema } from "@google/genai";
+import { GoogleGenAI, Type, type Schema } from "@google/genai";
 import { AnalysisResult } from "../types";
 
 /**
@@ -6,11 +6,12 @@ import { AnalysisResult } from "../types";
  */
 const getApiKey = (): string => {
   try {
-    if (typeof process !== "undefined" && process.env && process.env.API_KEY) {
+    // Defensively check for process and process.env to avoid ReferenceErrors
+    if (typeof process !== "undefined" && process?.env?.API_KEY) {
       return process.env.API_KEY;
     }
   } catch (e) {
-    // Ignore reference errors
+    // Ignore any environment access errors
   }
   return "";
 };
@@ -47,7 +48,8 @@ export const analyzeStartupPitch = async (
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  const modelId = "gemini-2.5-flash-latest"; // Efficient multimodal model
+  // Using gemini-2.0-flash-exp as it is highly capable for multimodal tasks and widely available
+  const modelId = "gemini-2.0-flash-exp"; 
 
   // Define the output schema for structured JSON
   const analysisSchema: Schema = {
@@ -162,7 +164,7 @@ export const createNegotiationSession = (initialContext: string) => {
   const ai = new GoogleGenAI({ apiKey });
   
   const chat = ai.chats.create({
-    model: 'gemini-3-flash-preview', // High reasoning capability for negotiation
+    model: 'gemini-2.0-flash-exp', // Using 2.0 Flash for consistency and speed
     config: {
       systemInstruction: `You are "Ventura", a highly intelligent AI Investment Negotiator representing a top-tier VC firm.
       The startup you are talking to has passed the initial screening with a high score (>90%).

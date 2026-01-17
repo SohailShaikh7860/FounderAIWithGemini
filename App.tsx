@@ -17,9 +17,11 @@ const App: React.FC = () => {
       const result = await analyzeStartupPitch(data.videoFile, data.reportText, data.reportFile);
       setAnalysisResult(result);
       setAppState(AppState.RESULTS);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Analysis failed:", error);
-      alert("Failed to analyze pitch. Please ensure the API key is valid and try again. If the video is large, try a text-only report.");
+      // Show the specific error message to the user
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      alert(`Failed to analyze pitch: ${errorMessage}\n\nPlease check your API key and network connection.`);
       setAppState(AppState.IDLE);
     }
   };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Bot, User, DollarSign, X } from 'lucide-react';
 import { ChatMessage, AnalysisResult } from '../types';
 import { createNegotiationSession } from '../services/geminiService';
-import { Chat, GenerateContentResponse } from '@google/genai';
+import type { Chat, GenerateContentResponse } from '@google/genai';
 
 interface NegotiationChatProps {
   analysis: AnalysisResult;
@@ -28,11 +28,11 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
   useEffect(() => {
     const initChat = async () => {
       setIsLoading(true);
-      const session = createNegotiationSession(JSON.stringify(analysis));
-      setChatSession(session);
-
-      // Initial Greeting from AI
       try {
+        const session = createNegotiationSession(JSON.stringify(analysis));
+        setChatSession(session);
+
+        // Initial Greeting from AI
         const response: GenerateContentResponse = await session.sendMessage({
           message: `The startup is "${analysis.companyName}". Score is ${analysis.score}. Summary: ${analysis.summary}. Start the negotiation.`
         });
@@ -53,7 +53,7 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
             {
               id: 'error',
               role: 'model',
-              text: "System Error: Unable to initiate negotiation protocols. Please try again.",
+              text: "System Error: Unable to initiate negotiation protocols. Check your API Key.",
               timestamp: new Date()
             }
           ]);
