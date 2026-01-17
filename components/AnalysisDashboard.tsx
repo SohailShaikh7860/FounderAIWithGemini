@@ -1,14 +1,15 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Label } from 'recharts';
 import { AnalysisResult } from '../types';
-import { CheckCircle, XCircle, TrendingUp, Zap, Users, ArrowRight } from 'lucide-react';
+import { CheckCircle, XCircle, TrendingUp, Zap, Users, ArrowRight, RotateCcw } from 'lucide-react';
 
 interface AnalysisDashboardProps {
   result: AnalysisResult;
   onStartNegotiation: () => void;
+  onReset: () => void;
 }
 
-export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, onStartNegotiation }) => {
+export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, onStartNegotiation, onReset }) => {
   const isHighPotential = result.score >= 90;
   
   const chartData = [
@@ -17,11 +18,20 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8 animate-fade-in">
+    <div className="w-full max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
       {/* Header Section */}
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-white">{result.companyName}</h2>
-        <p className="text-slate-400 text-lg">Investment Analysis Report</p>
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="text-center md:text-left">
+          <h2 className="text-3xl font-bold text-white">{result.companyName}</h2>
+          <p className="text-slate-400 text-lg">Investment Analysis Report</p>
+        </div>
+        <button 
+          onClick={onReset}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700"
+        >
+          <RotateCcw size={16} />
+          Analyze New Pitch
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -125,7 +135,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
       </div>
 
       {/* Action Footer */}
-      <div className="flex justify-center pt-4 pb-12">
+      <div className="flex flex-col items-center justify-center pt-4 pb-8 space-y-4">
         {isHighPotential ? (
           <button
             onClick={onStartNegotiation}
@@ -138,10 +148,20 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
             </span>
           </button>
         ) : (
-          <div className="text-slate-500 text-sm italic border-t border-slate-800 pt-4">
-            Analysis complete. Score below threshold for automated negotiation.
+          <div className="text-slate-500 text-sm italic border-t border-slate-800 pt-4 w-full text-center">
+            Score below 90%. Automated negotiation unavailable. 
           </div>
         )}
+        
+        {/* Secondary option to reset */}
+         {!isHighPotential && (
+            <button 
+              onClick={onReset}
+              className="text-slate-400 hover:text-white text-sm hover:underline"
+            >
+              Analyze another startup
+            </button>
+         )}
       </div>
     </div>
   );

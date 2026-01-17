@@ -48,8 +48,8 @@ export const analyzeStartupPitch = async (
   }
 
   const ai = new GoogleGenAI({ apiKey });
-  // Using gemini-2.0-flash-exp as it is highly capable for multimodal tasks and widely available
-  const modelId = "gemini-2.0-flash-exp"; 
+  // Using gemini-3-flash-preview for fast, efficient multimodal analysis
+  const modelId = "gemini-3-flash-preview"; 
 
   // Define the output schema for structured JSON
   const analysisSchema: Schema = {
@@ -164,7 +164,7 @@ export const createNegotiationSession = (initialContext: string) => {
   const ai = new GoogleGenAI({ apiKey });
   
   const chat = ai.chats.create({
-    model: 'gemini-2.0-flash-exp', // Using 2.0 Flash for consistency and speed
+    model: 'gemini-3-pro-preview', // Using 3.0 Pro for advanced reasoning in negotiation
     config: {
       systemInstruction: `You are "Ventura", a highly intelligent AI Investment Negotiator representing a top-tier VC firm.
       The startup you are talking to has passed the initial screening with a high score (>90%).
