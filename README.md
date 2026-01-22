@@ -49,7 +49,7 @@ VentureScout AI transforms the venture capital investment process by using multi
 
 1. Clone the repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/AashishTambe/FounderAIWithGemini.git
 cd FounderAIWithGemini
 ```
 
