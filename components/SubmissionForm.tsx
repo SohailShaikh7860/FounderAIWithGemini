@@ -106,24 +106,24 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit, isProc
 
   return (
     <div className="w-full max-w-4xl mx-auto animate-fade-in-up">
-      <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 shadow-xl">
-        <h2 className="text-2xl font-bold text-white mb-2">Submit Your Pitch</h2>
-        <p className="text-slate-400 mb-8">Upload your materials for AI analysis. Video is recommended, plus a Report (PDF) or Summary (Text).</p>
+      <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Submit Your Pitch</h2>
+        <p className="text-sm sm:text-base text-slate-400 mb-6 sm:mb-8">Upload your materials for AI analysis. Video is recommended, plus a Report (PDF) or Summary (Text).</p>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {/* Video Upload Zone */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300 flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <Video className="w-4 h-4 text-emerald-400" />
-                  Pitch Video (Optional)
+              <label className="text-xs sm:text-sm font-medium text-slate-300 flex items-center justify-between">
+                <span className="flex items-center gap-1 sm:gap-2">
+                  <Video className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-400" />
+                  <span className="text-xs sm:text-sm">Pitch Video (Optional)</span>
                 </span>
                 <span className="text-xs text-slate-500">Max: 20MB</span>
               </label>
               <div 
-                className={`relative group h-48 border-2 border-dashed rounded-xl p-4 transition-all duration-300 text-center cursor-pointer flex flex-col items-center justify-center
+                className={`relative group h-36 sm:h-48 border-2 border-dashed rounded-lg sm:rounded-xl p-3 sm:p-4 transition-all duration-300 text-center cursor-pointer flex flex-col items-center justify-center
                   ${dragActiveVideo ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-600 hover:border-slate-500 hover:bg-slate-700/30'}
                   ${video ? 'border-emerald-500/50 bg-emerald-500/5' : ''}
                 `}
@@ -176,7 +176,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit, isProc
                 <span className="text-xs text-slate-500">Max: 10MB</span>
               </label>
               <div 
-                className={`relative group h-48 border-2 border-dashed rounded-xl p-4 transition-all duration-300 text-center cursor-pointer flex flex-col items-center justify-center
+                className={`relative group h-40 sm:h-48 border-2 border-dashed rounded-xl p-3 sm:p-4 transition-all duration-300 text-center cursor-pointer flex flex-col items-center justify-center
                   ${dragActivePdf ? 'border-emerald-500 bg-emerald-500/5' : 'border-slate-600 hover:border-slate-500 hover:bg-slate-700/30'}
                   ${pdfFile ? 'border-emerald-500/50 bg-emerald-500/5' : ''}
                 `}
@@ -239,7 +239,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit, isProc
               value={report}
               onChange={(e) => setReport(e.target.value)}
               placeholder="Paste your executive summary, financial highlights, or additional notes here..."
-              className="w-full h-32 bg-slate-900/50 border border-slate-700 rounded-xl p-4 text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none transition-all"
+              className="w-full h-32 sm:h-40 bg-slate-900/50 border border-slate-700 rounded-xl p-3 sm:p-4 text-sm sm:text-base text-slate-200 placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none transition-all"
             />
           </div>
 
@@ -247,7 +247,7 @@ export const SubmissionForm: React.FC<SubmissionFormProps> = ({ onSubmit, isProc
             <button
               type="submit"
               disabled={isProcessing || (!report && !pdfFile)}
-              className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all transform duration-200
+              className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-xl font-bold text-base sm:text-lg transition-all transform duration-200
                 ${isProcessing || (!report && !pdfFile)
                   ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
                   : 'bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-white shadow-lg hover:shadow-emerald-500/25 active:scale-[0.98]'

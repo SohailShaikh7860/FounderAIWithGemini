@@ -21,28 +21,28 @@ export const DueDiligenceView: React.FC<DueDiligenceViewProps> = ({ claims, onCo
     const isAllVerified = activeClaims.every(c => c.status === 'Verified');
 
     return (
-        <div className="max-w-4xl mx-auto animate-fade-in">
-            <div className="text-center mb-10">
-                <div className="inline-block p-3 bg-amber-500/10 rounded-full mb-4">
-                    <ShieldCheck className="w-8 h-8 text-amber-500" />
+        <div className="max-w-4xl mx-auto animate-fade-in px-2">
+            <div className="text-center mb-8 sm:mb-10">
+                <div className="inline-block p-2.5 sm:p-3 bg-amber-500/10 rounded-full mb-3 sm:mb-4">
+                    <ShieldCheck className="w-7 h-7 sm:w-8 sm:h-8 text-amber-500" />
                 </div>
-                <h2 className="text-3xl font-bold text-white mb-2">Autonomous Due Diligence</h2>
-                <p className="text-slate-400 max-w-2xl mx-auto">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 px-4">Autonomous Due Diligence</h2>
+                <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto px-4">
                     Before we proceed to the investment committee, our AI analyst needs to verify
                     some key claims in your pitch.
                 </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
                 {activeClaims.map((claim, index) => (
                     <div
                         key={index}
-                        className={`p-6 rounded-xl border transition-all duration-300 ${claim.status === 'Verified'
+                        className={`p-4 sm:p-6 rounded-xl border transition-all duration-300 ${claim.status === 'Verified'
                                 ? 'bg-emerald-900/10 border-emerald-500/30'
                                 : 'bg-slate-900 border-slate-700'
                             }`}
                     >
-                        <div className="flex items-start gap-4">
+                        <div className="flex items-start gap-3 sm:gap-4">
                             <div className={`mt-1 p-2 rounded-lg ${claim.status === 'Verified' ? 'bg-emerald-500/20' : 'bg-amber-500/20'
                                 }`}>
                                 {claim.status === 'Verified' ? (
@@ -102,19 +102,19 @@ export const DueDiligenceView: React.FC<DueDiligenceViewProps> = ({ claims, onCo
                 ))}
             </div>
 
-            <div className="mt-10 flex justify-center">
+            <div className="mt-8 sm:mt-10 flex justify-center px-4">
                 <button
                     onClick={onComplete}
                     disabled={!isAllVerified}
                     className={`
-            group flex items-center gap-2 px-8 py-4 rounded-full text-lg font-bold transition-all
+            group flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-bold transition-all w-full sm:w-auto justify-center
             ${isAllVerified
                             ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/25 hover:scale-105'
                             : 'bg-slate-800 text-slate-500 cursor-not-allowed'}
           `}
                 >
                     {isAllVerified ? 'Proceed to Committee' : 'Resolve All Flags to Proceed'}
-                    <ArrowRight className={`w-5 h-5 ${isAllVerified ? 'group-hover:translate-x-1 transition-transform' : ''}`} />
+                    <ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 ${isAllVerified ? 'group-hover:translate-x-1 transition-transform' : ''}`} />
                 </button>
             </div>
         </div>

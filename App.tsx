@@ -106,19 +106,19 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-emerald-500/30">
       <Header currentView={currentView} onNavigate={handleNavigate} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
 
         {/* VIEW: STARTUPS (Main Flow) */}
         {currentView === 'startups' && (
           <>
             {/* Hero Section - Only show when IDLE */}
             {appState === AppState.IDLE && (
-              <div className="text-center mb-16 animate-fade-in">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight">
-                  Founding the Future with <br />
+              <div className="text-center mb-8 sm:mb-12 lg:mb-16 animate-fade-in">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 sm:mb-6 tracking-tight px-2">
+                  Founding the Future with <br className="hidden sm:block" />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Intelligent Capital</span>
                 </h1>
-                <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-6 sm:mb-10 px-4">
                   Upload your startup pitch. Our Gemini-powered AI analyzes viability in seconds.
                   Top-tier startups get immediate access to automated term sheet negotiation.
                 </p>

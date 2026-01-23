@@ -101,17 +101,17 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
-      <div className="w-full max-w-4xl h-[85vh] bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/90 backdrop-blur-sm">
+      <div className="w-full max-w-4xl h-[90vh] sm:h-[85vh] bg-slate-900 border border-slate-700 rounded-xl sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-scale-up">
         
         {/* Chat Header */}
-        <div className="p-4 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/20 rounded-lg">
-              <Bot className="w-6 h-6 text-emerald-400" />
+        <div className="p-3 sm:p-4 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-1.5 sm:p-2 bg-emerald-500/20 rounded-lg">
+              <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-400" />
             </div>
             <div>
-              <h3 className="font-bold text-white">Ventura AI Negotiator</h3>
+              <h3 className="font-bold text-white text-sm sm:text-base">Ventura AI Negotiator</h3>
               <p className="text-xs text-slate-400 flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Live Negotiation Session
@@ -119,24 +119,24 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-700 rounded-full transition-colors">
-            <X className="w-5 h-5 text-slate-400 hover:text-white" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 hover:text-white" />
           </button>
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-900/50">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6 bg-slate-900/50">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <div className={`flex max-w-[80%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1
+              <div className={`flex max-w-[85%] sm:max-w-[80%] gap-2 sm:gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1
                   ${msg.role === 'user' ? 'bg-cyan-500/20' : 'bg-emerald-500/20'}`}>
                   {msg.role === 'user' ? <User size={14} className="text-cyan-400" /> : <DollarSign size={14} className="text-emerald-400" />}
                 </div>
                 
-                <div className={`p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap
+                <div className={`p-3 sm:p-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-wrap
                   ${msg.role === 'user' 
                     ? 'bg-gradient-to-br from-cyan-600 to-blue-600 text-white rounded-tr-none shadow-lg shadow-cyan-900/20' 
                     : 'bg-slate-800 border border-slate-700 text-slate-200 rounded-tl-none shadow-lg'
@@ -148,11 +148,11 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
           ))}
           {isLoading && (
             <div className="flex justify-start w-full">
-               <div className="flex max-w-[80%] gap-3">
-                 <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+               <div className="flex max-w-[85%] sm:max-w-[80%] gap-2 sm:gap-3">
+                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-1">
                    <Bot size={14} className="text-emerald-400" />
                  </div>
-                 <div className="bg-slate-800 border border-slate-700 p-4 rounded-2xl rounded-tl-none flex items-center gap-2">
+                 <div className="bg-slate-800 border border-slate-700 p-3 sm:p-4 rounded-xl sm:rounded-2xl rounded-tl-none flex items-center gap-2">
                    <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce"></span>
                    <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce delay-75"></span>
                    <span className="w-2 h-2 bg-slate-500 rounded-full animate-bounce delay-150"></span>
@@ -164,22 +164,22 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-slate-800 border-t border-slate-700">
+        <div className="p-3 sm:p-4 bg-slate-800 border-t border-slate-700">
           <form onSubmit={handleSend} className="relative flex items-center gap-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your reply regarding equity, profit, or vision..."
-              className="w-full bg-slate-900 border border-slate-600 text-white rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-500"
+              placeholder="Type your reply..."
+              className="w-full bg-slate-900 border border-slate-600 text-white rounded-xl px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent placeholder-slate-500 text-sm sm:text-base"
               disabled={isLoading}
             />
             <button
               type="submit"
               disabled={!input.trim() || isLoading}
-              className="absolute right-2 p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 disabled:opacity-50 disabled:hover:bg-emerald-600 transition-colors"
+              className="absolute right-2 p-1.5 sm:p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-500 disabled:opacity-50 disabled:hover:bg-emerald-600 transition-colors"
             >
-              <Send size={18} />
+              <Send size={16} className="sm:w-[18px] sm:h-[18px]" />
             </button>
           </form>
         </div>

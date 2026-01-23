@@ -18,27 +18,27 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
+    <div className="w-full max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in pb-8 sm:pb-12">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="text-center md:text-left">
-          <h2 className="text-3xl font-bold text-white">{result.companyName}</h2>
-          <p className="text-slate-400 text-lg">Investment Analysis Report</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">{result.companyName}</h2>
+          <p className="text-slate-400 text-base sm:text-lg">Investment Analysis Report</p>
         </div>
         <button
           onClick={onReset}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 text-sm sm:text-base"
         >
           <RotateCcw size={16} />
           Analyze New Pitch
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         {/* Score Card */}
-        <div className="md:col-span-1 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-2xl p-6 flex flex-col items-center justify-center shadow-lg">
-          <h3 className="text-slate-300 font-medium mb-4">Gemini Confidence Score</h3>
-          <div className="w-48 h-48 relative">
+        <div className="md:col-span-1 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center shadow-lg">
+          <h3 className="text-slate-300 font-medium mb-3 sm:mb-4 text-sm sm:text-base">Gemini Confidence Score</h3>
+          <div className="w-40 h-40 sm:w-48 sm:h-48 relative">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -70,9 +70,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
         </div>
 
         {/* Metrics Grid */}
-        <div className="md:col-span-2 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-2xl p-6 shadow-lg">
-          <h3 className="text-slate-300 font-medium mb-6">Key Metrics Analysis</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="md:col-span-2 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
+          <h3 className="text-slate-300 font-medium mb-4 sm:mb-6 text-sm sm:text-base">Key Metrics Analysis</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
               <div className="flex items-center gap-2 mb-2 text-blue-400">
                 <TrendingUp size={20} />
@@ -104,10 +104,10 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
       </div>
 
       {/* Pros & Cons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-emerald-900/10 border border-emerald-500/20 rounded-2xl p-6">
-          <h3 className="flex items-center gap-2 text-emerald-400 font-semibold mb-4">
-            <CheckCircle size={20} /> Strengths
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-emerald-900/10 border border-emerald-500/20 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+          <h3 className="flex items-center gap-2 text-emerald-400 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
+            <CheckCircle size={18} className="sm:w-5 sm:h-5" /> Strengths
           </h3>
           <ul className="space-y-2">
             {result.pros.map((pro, idx) => (
@@ -119,9 +119,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
           </ul>
         </div>
 
-        <div className="bg-red-900/10 border border-red-500/20 rounded-2xl p-6">
-          <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-4">
-            <XCircle size={20} /> Risks & Weaknesses
+        <div className="bg-red-900/10 border border-red-500/20 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+          <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
+            <XCircle size={18} className="sm:w-5 sm:h-5" /> Risks & Weaknesses
           </h3>
           <ul className="space-y-2">
             {result.cons.map((con, idx) => (
@@ -135,23 +135,23 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, on
       </div>
 
       {/* Action Footer */}
-      <div className="flex flex-col items-center justify-center pt-4 pb-8 space-y-4">
+      <div className="flex flex-col items-center justify-center pt-4 pb-4 sm:pb-8 space-y-4">
         {/* Actions - Only show if viable (Score > 60 for Demo) */}
         {result.score >= 60 ? (
           <button
             onClick={onStartNegotiation}
-            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-slate-900 rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 border border-emerald-500/50 hover:border-emerald-400"
+            className="group relative inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 border border-emerald-500/50 hover:border-emerald-400 w-full sm:w-auto justify-center"
           >
             <div className="absolute -inset-3 transition-all duration-1000 opacity-30 group-hover:opacity-100 bg-gradient-to-r from-emerald-600 via-cyan-600 to-emerald-600 rounded-xl blur-lg group-hover:duration-200 animate-tilt"></div>
-            <span className="relative flex items-center gap-3 text-lg font-bold text-white">
+            <span className="relative flex items-center gap-2 sm:gap-3 text-base sm:text-lg font-bold text-white">
               Begin Autonomous Due Diligence
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
             </span>
           </button>
         ) : (
-          <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-200">
+          <div className="p-3 sm:p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-red-200 text-sm sm:text-base text-center sm:text-left">
             <span className="font-bold">Score below 60%.</span> Automated negotiation unavailable.
-            <button onClick={onReset} className="underline hover:text-white ml-2">Try improving pitch.</button>
+            <button onClick={onReset} className="underline hover:text-white">Try improving pitch.</button>
           </div>
         )}
       </div>
