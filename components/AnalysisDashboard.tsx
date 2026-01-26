@@ -1,7 +1,8 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Label } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { AnalysisResult } from '../types';
 import { CheckCircle, XCircle, TrendingUp, Zap, Users, ArrowRight, RotateCcw } from 'lucide-react';
+import { Card } from './ui/Card';
 
 interface AnalysisDashboardProps {
   result: AnalysisResult;
@@ -10,149 +11,192 @@ interface AnalysisDashboardProps {
 }
 
 export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({ result, onStartNegotiation, onReset }) => {
-  const isHighPotential = result.score >= 90;
+  const isHighPotential = result.score >= 75; // Adjusted threshold for realism
 
   const chartData = [
     { name: 'Score', value: result.score },
     { name: 'Remaining', value: 100 - result.score },
   ];
 
+  const MetricCard = ({ icon: Icon, label, value, colorClass }: any) => (
+    <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 hover:border-slate-700 transition-colors">
+      <div className={`flex items-center gap-2 mb-2 ${colorClass}`}>
+        <Icon size={18} />
+        <span className="font-semibold text-sm">{label}</span>
+      </div>
+      <p className="text-slate-300 text-sm leading-relaxed">{value}</p>
+    </div>
+  );
+
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in pb-8 sm:pb-12">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="text-center md:text-left">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">{result.companyName}</h2>
-          <p className="text-slate-400 text-base sm:text-lg">Investment Analysis Report</p>
+    <div className="w-full max-w-6xl mx-auto space-y-8 animate-fade-in pb-12">
+      {/* Header with Case Study Context */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Analysis Complete
+          </div>
+          <h2 className="text-3xl font-display font-bold text-white">{result.companyName}</h2>
+          <p className="text-slate-400">Gemini Investment Committee Report</p>
         </div>
         <button
           onClick={onReset}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-slate-700 text-sm sm:text-base"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors text-sm font-medium"
         >
           <RotateCcw size={16} />
-          Analyze New Pitch
+          New Analysis
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-        {/* Score Card */}
-        <div className="md:col-span-1 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 flex flex-col items-center justify-center shadow-lg">
-          <h3 className="text-slate-300 font-medium mb-3 sm:mb-4 text-sm sm:text-base">Gemini Confidence Score</h3>
-          <div className="w-40 h-40 sm:w-48 sm:h-48 relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  startAngle={90}
-                  endAngle={-270}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  <Cell fill={isHighPotential ? '#10b981' : '#f59e0b'} />
-                  <Cell fill="#1e293b" />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className={`text-4xl font-bold ${isHighPotential ? 'text-emerald-400' : 'text-amber-400'}`}>
-                {result.score}
-              </span>
-              <span className="text-xs text-slate-500 uppercase tracking-wide">out of 100</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column: Score & Summary */}
+        <div className="lg:col-span-1 space-y-6">
+          {/* Score Card */}
+          <Card className="flex flex-col items-center justify-center text-center p-8">
+            <h3 className="text-slate-400 font-medium mb-6 uppercase text-xs tracking-widest">Viability Score</h3>
+            <div className="w-48 h-48 relative mb-6">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={65}
+                    outerRadius={85}
+                    startAngle={90}
+                    endAngle={-270}
+                    dataKey="value"
+                    stroke="none"
+                    cornerRadius={5}
+                    paddingAngle={2}
+                  >
+                    <Cell fill={isHighPotential ? '#10b981' : '#f59e0b'} />
+                    <Cell fill="#1e293b" />
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className={`text-5xl font-display font-bold ${isHighPotential ? 'text-white' : 'text-amber-400'}`}>
+                  {result.score}
+                </span>
+                <span className="text-xs text-slate-500 font-medium">/ 100</span>
+              </div>
             </div>
+
+            <div className={`px-4 py-1.5 rounded-full text-xs font-bold border ${isHighPotential
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+              }`}>
+              {isHighPotential ? 'INVESTMENT GRADE' : 'REQUIRES REVIEW'}
+            </div>
+          </Card>
+
+          {/* Executive Summary Mobile (visible only on small) */}
+          <div className="lg:hidden">
+            <Card>
+              <h3 className="text-white font-semibold mb-3">Executive Summary</h3>
+              <p className="text-slate-300 text-sm leading-relaxed">{result.summary}</p>
+            </Card>
           </div>
-          <p className={`mt-4 text-center text-sm font-medium ${isHighPotential ? 'text-emerald-400' : 'text-amber-400'}`}>
-            {isHighPotential ? 'High Investment Potential' : 'Needs Improvement'}
-          </p>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="md:col-span-2 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-lg">
-          <h3 className="text-slate-300 font-medium mb-4 sm:mb-6 text-sm sm:text-base">Key Metrics Analysis</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-              <div className="flex items-center gap-2 mb-2 text-blue-400">
-                <TrendingUp size={20} />
-                <span className="font-semibold text-sm">Market Size</span>
-              </div>
-              <p className="text-slate-300 text-sm leading-relaxed">{result.metrics.marketSize}</p>
-            </div>
-            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-              <div className="flex items-center gap-2 mb-2 text-purple-400">
-                <Zap size={20} />
-                <span className="font-semibold text-sm">Innovation</span>
-              </div>
-              <p className="text-slate-300 text-sm leading-relaxed">{result.metrics.innovation}</p>
-            </div>
-            <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-              <div className="flex items-center gap-2 mb-2 text-orange-400">
-                <Users size={20} />
-                <span className="font-semibold text-sm">Scalability</span>
-              </div>
-              <p className="text-slate-300 text-sm leading-relaxed">{result.metrics.scalability}</p>
-            </div>
-          </div>
+        {/* Right Column: Detailed Metrics */}
+        <div className="lg:col-span-2 space-y-6">
+          <Card className="h-full">
+            <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+              <TrendingUp className="text-emerald-400" size={20} />
+              Key Investment Metrics
+            </h3>
 
-          <div className="mt-6 pt-6 border-t border-slate-700">
-            <h4 className="text-slate-400 text-sm font-medium mb-2">Executive Summary</h4>
-            <p className="text-slate-300 text-sm leading-relaxed">{result.summary}</p>
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <MetricCard
+                icon={TrendingUp}
+                label="Market Opportunity"
+                value={result.metrics.marketSize}
+                colorClass="text-blue-400"
+              />
+              <MetricCard
+                icon={Zap}
+                label="Product Innovation"
+                value={result.metrics.innovation}
+                colorClass="text-purple-400"
+              />
+              <MetricCard
+                icon={Users}
+                label="Scalability Potential"
+                value={result.metrics.scalability}
+                colorClass="text-orange-400"
+              />
+            </div>
+
+            <div className="border-t border-slate-800 pt-6">
+              <h4 className="text-slate-400 text-sm font-bold uppercase tracking-wider mb-3">Executive Summary</h4>
+              <p className="text-slate-300 text-sm md:text-base leading-relaxed">{result.summary}</p>
+            </div>
+          </Card>
         </div>
       </div>
 
-      {/* Pros & Cons */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-emerald-900/10 border border-emerald-500/20 rounded-xl sm:rounded-2xl p-4 sm:p-6">
-          <h3 className="flex items-center gap-2 text-emerald-400 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
-            <CheckCircle size={18} className="sm:w-5 sm:h-5" /> Strengths
+      {/* Pros & Cons Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card variant="outline" className="bg-emerald-950/20 border-emerald-900/50">
+          <h3 className="flex items-center gap-3 text-emerald-400 font-bold mb-4">
+            <CheckCircle size={20} /> Strong Signals
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {result.pros.map((pro, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-slate-300 text-sm">
-                <span className="mt-1.5 w-1 h-1 rounded-full bg-emerald-500 flex-shrink-0" />
+              <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm">
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0" />
                 {pro}
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
 
-        <div className="bg-red-900/10 border border-red-500/20 rounded-xl sm:rounded-2xl p-4 sm:p-6">
-          <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-3 sm:mb-4 text-sm sm:text-base">
-            <XCircle size={18} className="sm:w-5 sm:h-5" /> Risks & Weaknesses
+        <Card variant="outline" className="bg-red-950/10 border-red-900/30">
+          <h3 className="flex items-center gap-3 text-red-400 font-bold mb-4">
+            <XCircle size={20} /> Risk Factors
           </h3>
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {result.cons.map((con, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-slate-300 text-sm">
-                <span className="mt-1.5 w-1 h-1 rounded-full bg-red-500 flex-shrink-0" />
+              <li key={idx} className="flex items-start gap-3 text-slate-300 text-sm">
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0" />
                 {con}
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
       </div>
 
       {/* Action Footer */}
-      <div className="flex flex-col items-center justify-center pt-4 pb-4 sm:pb-8 space-y-4">
-        {/* Actions - Only show if viable (Score > 60 for Demo) */}
+      <div className="flex justify-center pt-8">
         {result.score >= 60 ? (
-          <button
-            onClick={onStartNegotiation}
-            className="group relative inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 border border-emerald-500/50 hover:border-emerald-400 w-full sm:w-auto justify-center"
-          >
-            <div className="absolute -inset-3 transition-all duration-1000 opacity-30 group-hover:opacity-100 bg-gradient-to-r from-emerald-600 via-cyan-600 to-emerald-600 rounded-xl blur-lg group-hover:duration-200 animate-tilt"></div>
-            <span className="relative flex items-center gap-2 sm:gap-3 text-base sm:text-lg font-bold text-white">
-              Begin Autonomous Due Diligence
-              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </button>
-        ) : (
-          <div className="p-3 sm:p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-red-200 text-sm sm:text-base text-center sm:text-left">
-            <span className="font-bold">Score below 60%.</span> Automated negotiation unavailable.
-            <button onClick={onReset} className="underline hover:text-white">Try improving pitch.</button>
+          <div className="text-center space-y-4 max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-bold uppercase tracking-wide">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Due Diligence Agents Ready
+            </div>
+            <button
+              onClick={onStartNegotiation}
+              className="group relative flex items-center gap-3 px-8 py-4 bg-slate-100 hover:bg-white text-slate-900 rounded-xl font-bold text-lg transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] mx-auto"
+            >
+              Start Autonomous Negotiation
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <p className="text-slate-500 text-sm">
+              Proceeding will verify claims (`Due Diligence`) and initiate term sheet generation (`Committee`).
+            </p>
           </div>
+        ) : (
+          <Card variant="flat" className="bg-red-950/20 border-red-900/20 text-center max-w-md">
+            <h4 className="text-red-400 font-bold mb-2">Investment Criteria Not Met</h4>
+            <p className="text-slate-400 text-sm mb-4">The viability score is below the threshold for automated negotiation.</p>
+            <button onClick={onReset} className="text-white underline hover:text-emerald-400 text-sm">Submit Revised Pitch</button>
+          </Card>
         )}
       </div>
     </div>

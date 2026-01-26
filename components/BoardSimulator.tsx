@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { History, AlertTriangle, ArrowRight, Play } from 'lucide-react';
+import { History, AlertTriangle, ArrowRight, Clock } from 'lucide-react';
 import { AnalysisResult, BoardScenario } from '../types';
 import { startBoardSimulation } from '../services/geminiService';
+import { Card } from './ui/Card';
 
 interface BoardSimulatorProps {
     analysis: AnalysisResult;
@@ -17,7 +18,6 @@ export const BoardSimulator: React.FC<BoardSimulatorProps> = ({ analysis, onRest
     useEffect(() => {
         const loadScenario = async () => {
             try {
-                // Add artificial delay for "Time Travel" feeling
                 await new Promise(r => setTimeout(r, 2000));
                 const sim = await startBoardSimulation(analysis);
                 setScenario(sim);
@@ -38,10 +38,9 @@ export const BoardSimulator: React.FC<BoardSimulatorProps> = ({ analysis, onRest
     if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] animate-fade-in px-4">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-emerald-500/20 border-t-emerald-500 animate-spin mb-4 sm:mb-6"></div>
-                <h2 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 text-center">
-                    Warping 18 Months into the Future...
-                </h2>
+                <div className="w-24 h-24 rounded-full border-4 border-emerald-500/20 border-t-emerald-500 animate-spin mb-8"></div>
+                <h2 className="text-3xl font-bold font-display text-white mb-2">Simulating Future Scenarios</h2>
+                <p className="text-slate-400">Projecting company trajectory based on current deal terms...</p>
             </div>
         );
     }
@@ -49,75 +48,90 @@ export const BoardSimulator: React.FC<BoardSimulatorProps> = ({ analysis, onRest
     if (!scenario) return <div className="text-center text-slate-400">Failed to load simulation.</div>;
 
     return (
-        <div className="max-w-4xl mx-auto animate-fade-in px-2">
-            <div className="flex items-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <div className="p-2 sm:p-3 bg-purple-500/20 rounded-xl">
-                    <History className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
+        <div className="max-w-4xl mx-auto animate-fade-in pb-12">
+            <div className="flex items-center gap-4 mb-8">
+                <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20">
+                    <Clock className="w-8 h-8 text-purple-400" />
                 </div>
                 <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white">Board Meeting Simulator</h2>
-                    <p className="text-purple-400 font-mono mt-1 text-sm sm:text-base">{scenario.timeJump}</p>
+                    <h2 className="text-3xl font-bold text-white font-display">Board Room Simulator</h2>
+                    <p className="text-purple-400 font-mono text-sm tracking-widest uppercase">
+                        Timeline: {scenario.timeJump}
+                    </p>
                 </div>
             </div>
 
-            <div className="bg-slate-900 border border-slate-700 rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 shadow-2xl relative overflow-hidden">
+            <Card className="relative overflow-hidden border-purple-500/30" padding="lg">
                 {/* Background Effect */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-600/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-                <div className="mb-5 sm:mb-6 flex items-start gap-3 sm:gap-4">
-                    <AlertTriangle className="w-8 h-8 sm:w-10 sm:h-10 text-amber-500 shrink-0" />
-                    <div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{scenario.title}</h3>
-                        <p className="text-slate-300 text-base sm:text-lg leading-relaxed">{scenario.description}</p>
+                <div className="relative z-10">
+                    <div className="flex items-start gap-5 mb-8">
+                        <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 shrink-0">
+                            <AlertTriangle className="w-8 h-8 text-amber-500" />
+                        </div>
+                        <div>
+                            <h3 className="text-2xl font-bold text-white mb-3">{scenario.title}</h3>
+                            <p className="text-slate-300 text-lg leading-relaxed">{scenario.description}</p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mt-6 sm:mt-10">
-                    {scenario.choices.map((choice) => {
-                        const isSelected = selectedChoice === choice.id;
-                        const isOtherSelected = selectedChoice !== null && !isSelected;
+                    <div className="grid grid-cols-1 gap-4">
+                        {scenario.choices.map((choice) => {
+                            const isSelected = selectedChoice === choice.id;
+                            const isOtherSelected = selectedChoice !== null && !isSelected;
 
-                        return (
-                            <button
-                                key={choice.id}
-                                disabled={selectedChoice !== null}
-                                onClick={() => handleChoice(choice.id)}
-                                className={`text-left p-4 sm:p-6 rounded-lg sm:rounded-xl border transition-all duration-300 relative overflow-hidden group
-                            ${isSelected
-                                        ? 'bg-emerald-900/30 border-emerald-500/50 ring-2 ring-emerald-500'
-                                        : 'bg-slate-800 border-slate-700 hover:border-slate-500 hover:bg-slate-750'
-                                    }
-                            ${isOtherSelected ? 'opacity-50' : 'opacity-100'}
-                        `}
-                            >
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="bg-slate-700 text-slate-300 px-2 sm:px-3 py-1 rounded-lg text-xs font-bold uppercase">Option {choice.id}</span>
-                                    {isSelected && <ArrowRight className="text-emerald-400 w-4 h-4 sm:w-5 sm:h-5 animate-slide-right" />}
-                                </div>
-                                <h4 className="text-base sm:text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">{choice.label}</h4>
-
-                                {isSelected && showConsequence && (
-                                    <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-emerald-500/30 animate-fade-in text-emerald-200 text-sm sm:text-base">
-                                        {choice.consequence}
+                            return (
+                                <button
+                                    key={choice.id}
+                                    disabled={selectedChoice !== null}
+                                    onClick={() => handleChoice(choice.id)}
+                                    className={`text-left p-6 rounded-xl border-2 transition-all duration-300 relative overflow-hidden group
+                                        ${isSelected
+                                            ? 'bg-purple-900/20 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.15)]'
+                                            : 'bg-slate-900/50 border-slate-800 hover:border-slate-600 hover:bg-slate-800'
+                                        }
+                                        ${isOtherSelected ? 'opacity-40 grayscale' : 'opacity-100'}
+                                    `}
+                                >
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider
+                                            ${isSelected ? 'bg-purple-500 text-white' : 'bg-slate-800 text-slate-500'}
+                                        `}>
+                                            Option {choice.id}
+                                        </span>
+                                        {isSelected && <ArrowRight className="text-purple-400 w-5 h-5 animate-slide-right" />}
                                     </div>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
 
-                {showConsequence && (
-                    <div className="mt-6 sm:mt-10 flex justify-center animate-slide-up">
-                        <button
-                            onClick={onRestart}
-                            className="bg-slate-700 hover:bg-slate-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-medium transition-colors flex items-center gap-2 text-sm sm:text-base">
-                            <History className="w-4 h-4" />
-                            Restart Simulation
-                        </button>
+                                    <h4 className={`text-xl font-bold mb-2 transition-colors ${isSelected ? 'text-white' : 'text-slate-200 group-hover:text-purple-300'}`}>
+                                        {choice.label}
+                                    </h4>
+
+                                    {isSelected && showConsequence && (
+                                        <div className="mt-4 pt-4 border-t border-purple-500/30 animate-fade-in">
+                                            <p className="text-purple-200 text-lg italic">
+                                                "{choice.consequence}"
+                                            </p>
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
                     </div>
-                )}
 
-            </div>
+                    {showConsequence && (
+                        <div className="mt-10 flex justify-center animate-slide-up">
+                            <button
+                                onClick={onRestart}
+                                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 px-8 py-3 rounded-full font-bold transition-all flex items-center gap-2 hover:scale-105"
+                            >
+                                <History className="w-5 h-5" />
+                                Run New Simulation
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </Card>
         </div>
     );
 };

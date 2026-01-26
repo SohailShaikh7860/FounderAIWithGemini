@@ -1,4 +1,6 @@
 
+export type ViewType = 'startups' | 'investors' | 'portfolio';
+
 export interface AnalysisResult {
   score: number;
   companyName: string;

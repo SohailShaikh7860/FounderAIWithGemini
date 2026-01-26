@@ -1,10 +1,10 @@
-# VentureScout AI
+# Founder AI
 
 An intelligent VC investment platform powered by Google Gemini 3.0 that analyzes startup pitches and automates the investment decision pipeline.
 
 ## Overview
 
-VentureScout AI transforms the venture capital investment process by using multiple specialized AI agents to evaluate startups, conduct due diligence, and negotiate term sheets. The platform processes multimodal inputs (video pitches, PDF decks, text summaries) and provides comprehensive investment analysis.
+Founder AI transforms the venture capital investment process by using multiple specialized AI agents to evaluate startups, conduct due diligence, and negotiate term sheets. The platform processes multimodal inputs (video pitches, PDF decks, text summaries) and provides comprehensive investment analysis.
 
 ## Key Features
 

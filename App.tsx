@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Header } from './components/Header';
 import { SubmissionForm } from './components/SubmissionForm';
 import { AnalysisDashboard } from './components/AnalysisDashboard';
 import { NegotiationChat } from './components/NegotiationChat';
@@ -8,31 +7,28 @@ import { Investors } from './components/Investors';
 import { DueDiligenceView } from './components/DueDiligenceView';
 import { CommitteeRoom } from './components/CommitteeRoom';
 import { BoardSimulator } from './components/BoardSimulator';
-import { AppState, StartupSubmission, AnalysisResult, DueDiligenceClaim } from './types';
+import { AppState, StartupSubmission, AnalysisResult, DueDiligenceClaim, ViewType } from './types';
 import { analyzeStartupPitch, performDueDiligence } from './services/geminiService';
-
-type ViewType = 'startups' | 'investors' | 'portfolio';
+import { AppLayout } from './components/layout/AppLayout';
+import { PageHeader } from './components/ui/PageHeader';
 
 const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(AppState.IDLE);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [submissionData, setSubmissionData] = useState<StartupSubmission | null>(null); // Keep track for context
+  const [submissionData, setSubmissionData] = useState<StartupSubmission | null>(null);
   const [ddClaims, setDdClaims] = useState<DueDiligenceClaim[]>([]);
 
-  // New state for Navigation and Portfolio History
+  // Navigation and History State
   const [currentView, setCurrentView] = useState<ViewType>('startups');
   const [history, setHistory] = useState<AnalysisResult[]>([]);
 
   const handleSubmission = async (data: StartupSubmission) => {
     setAppState(AppState.ANALYZING);
-    setSubmissionData(data); // Store for later agents
+    setSubmissionData(data);
     try {
       const result = await analyzeStartupPitch(data.videoFile, data.reportText, data.reportFile);
       setAnalysisResult(result);
-
-      // Add to history
       setHistory(prev => [result, ...prev]);
-
       setAppState(AppState.RESULTS);
     } catch (error: any) {
       console.error("Analysis failed:", error);
@@ -42,52 +38,35 @@ const App: React.FC = () => {
     }
   };
 
-  // Step 1: Start Due Diligence (Triggered from Dashboard)
   const startDueDiligence = async () => {
     if (!analysisResult || !submissionData) return;
-
-    // We can show a loading state if needed, or just switch
-    // Ideally we fetch the claims first before showing the view, 
-    // or the view handles loading. For simplicity, let's switch and let useEffect in component (or here) fetch.
-    // But DueDiligenceView expects claims prop. Let's fetch here with a loading indicator if possible.
-    // For now, I'll do a quick inline fetch or modify the flow. 
-    // Let's modify: Set state to DUE_DILIGENCE, but show a spinner if claims are empty? 
-    // Better: Fetch first.
-
     try {
       const textContext = submissionData.reportText || "Full pitch report provided.";
+      // Optimistic update or loading state could be better here
       const claims = await performDueDiligence(textContext, analysisResult);
       setDdClaims(claims);
       setAppState(AppState.DUE_DILIGENCE);
     } catch (e) {
       console.error("DD failed", e);
-      // Fallback if AI fails: Skip to Committee
       setAppState(AppState.COMMITTEE);
     }
   };
 
-  // Step 2: Complete Due Diligence -> Committee
   const handleDueDiligenceComplete = () => {
     setAppState(AppState.COMMITTEE);
   };
 
-  // Step 3: Committee Approved -> Negotiation
   const handleCommitteeProceed = () => {
     setAppState(AppState.NEGOTIATING);
   };
 
-  // Step 3b: Committee Rejected
   const handleCommitteeReject = () => {
     setAppState(AppState.REJECTED);
-    // Maybe show a rejection screen? For now reset or just stay.
     alert("The committee has decided not to proceed at this time.");
     resetToHome();
   };
 
-  // Step 4: Negotiation Success -> Board Sim
   const closeNegotiation = () => {
-    // In a real app, we'd check if deal was signed.
-    // Let's assume success leads to Simulation.
     setAppState(AppState.BOARD_SIMULATION);
   };
 
@@ -98,100 +77,98 @@ const App: React.FC = () => {
     setCurrentView('startups');
   };
 
-  const handleNavigate = (view: ViewType) => {
-    setCurrentView(view);
+  // --- Render Helpers ---
+
+  const renderContent = () => {
+    if (currentView === 'portfolio') {
+      return (
+        <>
+          <PageHeader title="Portfolio" description="Track and manage your successful investments." />
+          <Portfolio items={history} />
+        </>
+      );
+    }
+
+    if (currentView === 'investors') {
+      return (
+        <>
+          <PageHeader title="Investors" description="Connect with your syndicates and LP network." />
+          <Investors />
+        </>
+      );
+    }
+
+    // Default: Startups Flow
+    return (
+      <>
+        {appState === AppState.IDLE && (
+          <div className="max-w-3xl mx-auto text-center py-12">
+            <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6">
+              Founding the Future with <br />
+              <span className="text-emerald-400">Intelligent Capital</span>
+            </h1>
+            <p className="text-xl text-slate-400 mb-10">
+              Upload your startup pitch. Our Gemini-powered AI analyzes viability in seconds.
+            </p>
+            <SubmissionForm
+              onSubmit={handleSubmission}
+              isProcessing={appState === AppState.ANALYZING}
+            />
+          </div>
+        )}
+
+        {appState === AppState.ANALYZING && (
+          <div className="flex flex-col items-center justify-center h-[60vh]">
+            <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-6"></div>
+            <h2 className="text-2xl font-display font-semibold text-white">Analyzing Pitch...</h2>
+            <p className="text-slate-400 mt-2">Our AI agents are reviewing market viability and team strength.</p>
+          </div>
+        )}
+
+        {appState === AppState.RESULTS && analysisResult && (
+          <AnalysisDashboard
+            result={analysisResult}
+            onStartNegotiation={startDueDiligence}
+            onReset={resetToHome}
+          />
+        )}
+
+        {appState === AppState.DUE_DILIGENCE && (
+          <DueDiligenceView
+            claims={ddClaims}
+            onComplete={handleDueDiligenceComplete}
+          />
+        )}
+
+        {appState === AppState.COMMITTEE && analysisResult && (
+          <CommitteeRoom
+            analysis={analysisResult}
+            onProceed={handleCommitteeProceed}
+            onReject={handleCommitteeReject}
+          />
+        )}
+
+        {appState === AppState.NEGOTIATING && analysisResult && (
+          <NegotiationChat
+            analysis={analysisResult}
+            onClose={closeNegotiation}
+          />
+        )}
+
+        {appState === AppState.BOARD_SIMULATION && analysisResult && (
+          <BoardSimulator
+            analysis={analysisResult}
+            onRestart={resetToHome}
+          />
+        )}
+      </>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-emerald-500/30">
-      <Header currentView={currentView} onNavigate={handleNavigate} />
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-
-        {/* VIEW: STARTUPS (Main Flow) */}
-        {currentView === 'startups' && (
-          <>
-            {/* Hero Section - Only show when IDLE */}
-            {appState === AppState.IDLE && (
-              <div className="text-center mb-8 sm:mb-12 lg:mb-16 animate-fade-in">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 sm:mb-6 tracking-tight px-2">
-                  Founding the Future with <br className="hidden sm:block" />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Intelligent Capital</span>
-                </h1>
-                <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-6 sm:mb-10 px-4">
-                  Upload your startup pitch. Our Gemini-powered AI analyzes viability in seconds.
-                  Top-tier startups get immediate access to automated term sheet negotiation.
-                </p>
-              </div>
-            )}
-
-            {/* Dynamic Content based on State */}
-            <div className="transition-all duration-500 ease-in-out">
-              {appState === AppState.IDLE || appState === AppState.ANALYZING ? (
-                <SubmissionForm
-                  onSubmit={handleSubmission}
-                  isProcessing={appState === AppState.ANALYZING}
-                />
-              ) : null}
-
-              {appState === AppState.RESULTS && analysisResult && (
-                <AnalysisDashboard
-                  result={analysisResult}
-                  onStartNegotiation={startDueDiligence}
-                  onReset={resetToHome}
-                />
-              )}
-
-              {appState === AppState.DUE_DILIGENCE && (
-                <DueDiligenceView
-                  claims={ddClaims}
-                  onComplete={handleDueDiligenceComplete}
-                />
-              )}
-
-              {appState === AppState.COMMITTEE && analysisResult && (
-                <CommitteeRoom
-                  analysis={analysisResult}
-                  onProceed={handleCommitteeProceed}
-                  onReject={handleCommitteeReject}
-                />
-              )}
-
-              {appState === AppState.NEGOTIATING && analysisResult && (
-                <NegotiationChat
-                  analysis={analysisResult}
-                  onClose={closeNegotiation}
-                />
-              )}
-
-              {appState === AppState.BOARD_SIMULATION && analysisResult && (
-                <BoardSimulator
-                  analysis={analysisResult}
-                  onRestart={resetToHome}
-                />
-              )}
-            </div>
-          </>
-        )}
-
-        {/* VIEW: PORTFOLIO */}
-        {currentView === 'portfolio' && (
-          <Portfolio items={history} />
-        )}
-
-        {/* VIEW: INVESTORS */}
-        {currentView === 'investors' && (
-          <Investors />
-        )}
-
-      </main>
-
-      {/* Decorative Background Elements */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/5 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/5 rounded-full blur-[120px]"></div>
-      </div>
-    </div>
+    <AppLayout currentView={currentView} onNavigate={setCurrentView}>
+      {renderContent()}
+    </AppLayout>
   );
 };
 
