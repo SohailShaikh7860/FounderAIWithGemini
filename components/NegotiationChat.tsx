@@ -133,12 +133,11 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
     setIsGeneratingTermSheet(true);
     try {
       const sheet = await generateTermSheet(updatedMessages, analysis);
-      if (sheet.dealCompleted) {
-        setTermSheet(sheet);
-        setShowSuccessModal(true);
-      }
+      setTermSheet(sheet);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Failed to generate term sheet", error);
+      alert("Failed to generate term sheet. Please try saying 'we have a deal' again.");
     } finally {
       setIsGeneratingTermSheet(false);
     }
@@ -146,7 +145,7 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || !chatSession || isLoading || isCancelled) return;
+    if (!input.trim() || !chatSession || isLoading || isCancelled || isGeneratingTermSheet) return;
 
     // Check if user wants to cancel
     if (detectUserCancellation(input)) {
@@ -200,18 +199,6 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
           setTimeout(() => {
             handleDealCompletion(updatedMessages);
           }, 1500);
-        } else {
-          // Check if AI should auto-cancel based on conversation progress
-          const shouldCancel = await checkNegotiationProgress(updatedMessages, analysis);
-          
-          if (shouldCancel.shouldCancel) {
-            setTimeout(() => {
-              handleCancellation(shouldCancel.reason, false);
-            }, 2000);
-          } else if (shouldCancel.showWarning) {
-            setShowCancellationWarning(true);
-            setTimeout(() => setShowCancellationWarning(false), 5000);
-          }
         }
       }
     } catch (error) {
@@ -328,9 +315,9 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Type your reply to negotiate terms... (or type 'cancel negotiation' to end)"
+                  placeholder={isGeneratingTermSheet ? "Generating term sheet..." : "Type your reply to negotiate terms... (or type 'cancel negotiation' to end)"}
                   className="w-full bg-slate-950 border border-slate-700 text-white rounded-xl px-5 py-4 pr-12 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500/50 placeholder-slate-500 transition-all font-medium"
-                  disabled={isLoading}
+                  disabled={isLoading || isGeneratingTermSheet}
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-600 font-medium hidden sm:block">
                   RETURN to send
@@ -338,7 +325,7 @@ export const NegotiationChat: React.FC<NegotiationChatProps> = ({ analysis, onCl
               </div>
               <button
                 type="submit"
-                disabled={!input.trim() || isLoading}
+                disabled={!input.trim() || isLoading || isGeneratingTermSheet}
                 className="p-4 bg-emerald-600 text-white rounded-xl hover:bg-emerald-500 disabled:opacity-50 disabled:hover:bg-emerald-600 transition-all shadow-lg hover:shadow-emerald-500/20 active:scale-95"
               >
                 <Send size={20} />

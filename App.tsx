@@ -67,6 +67,11 @@ const App: React.FC = () => {
   };
 
   const closeNegotiation = () => {
+    resetToHome();
+  };
+
+  const proceedToBoardSimulation = () => {
+  
     setAppState(AppState.BOARD_SIMULATION);
   };
 
@@ -152,6 +157,7 @@ const App: React.FC = () => {
           <NegotiationChat
             analysis={analysisResult}
             onClose={closeNegotiation}
+            onProceedToBoardSim={proceedToBoardSimulation}
           />
         )}
 
